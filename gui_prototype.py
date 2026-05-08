@@ -6,7 +6,7 @@ class ConnectFourGUI:
         self.root = root
         self.root.title("Connect Four AI - Chess.com Style Eval Bar")
         self.root.geometry("800x600")
-        self.root.configure(bg="#21201D") # Dark aesthetic background
+        self.root.configure(bg="#21201D")
         
         # Main layout
         self.main_frame = tk.Frame(self.root, bg="#21201D")
@@ -26,7 +26,7 @@ class ConnectFourGUI:
         )
         self.eval_canvas.pack(pady=10)
         
-        # Board Canvas (Center area)
+        # Board Canvas
         self.board_canvas = tk.Canvas(
             self.main_frame, width=490, height=420, 
             bg="#262421", highlightthickness=0
@@ -34,7 +34,6 @@ class ConnectFourGUI:
         self.board_canvas.pack(side=tk.LEFT, expand=False)
         self.draw_board()
         
-        # Controls Frame for the Demo (Right Side)
         self.controls_frame = tk.Frame(self.main_frame, bg="#21201D")
         self.controls_frame.pack(side=tk.LEFT, fill=tk.Y, padx=(30, 0))
         
@@ -43,7 +42,7 @@ class ConnectFourGUI:
             bg="#21201D", fg="white", font=("Arial", 14, "bold")
         ).pack(pady=10)
         
-        # Slider to simulate changing heuristic score between -20.0 and 20.0
+        # Slider to show changing heuristic score
         self.eval_slider = tk.Scale(
             self.controls_frame, from_=20.0, to=-20.0, resolution=0.1, 
             orient=tk.VERTICAL, command=self.update_eval_bar, length=300, 
@@ -63,7 +62,7 @@ class ConnectFourGUI:
         self.update_eval_bar(0.0)
 
     def draw_board(self):
-        """Draws a mockup of a Modern Connect 4 Board."""
+        # Draws a mockup of a Modern Connect 4 Board.
         # Outer board background
         self.board_canvas.create_rectangle(10, 10, 480, 410, fill="#235FD4", outline="#17449E", width=4, tags="board_bg")
         
@@ -81,12 +80,6 @@ class ConnectFourGUI:
                 self.board_canvas.create_oval(x0, y0, x1, y1, fill="#21201D", outline="#1a1917", width=3)
                 
     def get_win_probability(self, score):
-        """
-        Calculates how the visual proportion of the bar is drawn.
-        Similar to Chess.com, an evaluation of '0' means 50% split.
-        Uses an arctangent curve to smoothly scale the score from -infinity to +infinity
-        into a visual bounds strictly between 0 and 1.
-        """
         # score / 4.0 manages the scaling curve (adjust 4.0 higher for a slower fill)
         return 0.5 + 0.5 * (2 / math.pi) * math.atan(score / 4.0)
                 
@@ -112,7 +105,6 @@ class ConnectFourGUI:
         # Draw Red rectangle (Player 1)
         self.eval_canvas.create_rectangle(0, yellow_h, w, h, fill="#D13B35", outline="", tags="bar")
         
-        # Text Logic (Draw the text value in the color that currently has more advantage)
         # If score is very high positive, show "M" logic (Mate in X) to stylize it.
         format_score = f"{self.current_eval:+.1f}" if abs(self.current_eval) < 18 else ("+M" if self.current_eval > 0 else "-M")
         
