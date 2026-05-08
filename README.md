@@ -1,8 +1,28 @@
-# Group Project
+# Connect Four AI
+A Python-based Connect Four game that uses a custom Minimax AI with Alpha-Beta pruning, a graphical user interface, and performance benchmarking tools.
 
-Initial setup of the project repository.
+## How to Run
 
-# Setup
-1. Download the repo and put it in a single folder somewhere.
-2. From your editor navigate to said folder.
-3. Run 'python app.py' without the quotes from your terminal to launch app. 
+1. **Clone the repository**
+   ```bash
+   git clone <your-github-repo-url>
+   cd <your-repo-folder>
+   ```
+
+2. **Install requirements**
+   The project requires `numpy`. Install it via pip:
+   ```bash
+   pip install numpy
+   ```
+
+3. **Play the game**
+   Launch the graphical interface to play against the AI or watch AI vs AI:
+   ```bash
+   python app.py
+   ```
+
+4. **Run AI benchmarks (Optional)**
+   To see performance metrics, win rates, and the impact of Alpha-Beta pruning:
+   ```bash
+   python evaluate.py
+   ```
