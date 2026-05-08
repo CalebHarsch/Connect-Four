@@ -22,10 +22,11 @@ A Python-based Connect Four game featuring a custom Minimax AI with Alpha-Beta p
    python app.py
    ```
 
-4. **Run AI benchmarks (Optional)**
+4. **Run AI benchmarks**
    To see performance metrics, win rates, and the impact of Alpha-Beta pruning:
    ```bash
    python evaluate.py
    ```
+   This may take a bit depending on how many games you have it set to simulate. I currently have it set to 5 games.
 
 Note: If this doesn't work we have a releases tab with the application. This should work.
