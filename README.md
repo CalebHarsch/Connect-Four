@@ -1,12 +1,13 @@
 # Connect Four AI
-A Python-based Connect Four game that uses a custom Minimax AI with Alpha-Beta pruning, a graphical user interface, and performance benchmarking tools.
+
+A Python-based Connect Four game featuring a custom Minimax AI with Alpha-Beta pruning, a graphical user interface, and performance benchmarking tools.
 
 ## How to Run
 
 1. **Clone the repository**
    ```bash
-   git clone <your-github-repo-url>
-   cd <your-repo-folder>
+   git clone https://github.com/CalebHarsch/Connect-Four.git
+   cd Connect-Four
    ```
 
 2. **Install requirements**
@@ -26,4 +27,5 @@ A Python-based Connect Four game that uses a custom Minimax AI with Alpha-Beta p
    ```bash
    python evaluate.py
    ```
+
 Note: If this doesn't work we have a releases tab with the application. This should work.
