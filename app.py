@@ -148,7 +148,7 @@ class ConnectFourApp:
         return 0.5 + 0.5 * (2 / math.pi) * math.atan(score / 8.0)
                 
     def update_eval_bar(self):
-        # We always evaluate from player 1's perspective for the bar.
+        # Always evaluate from player 1's perspective for the bar.
         current_eval = evaluate_board(self.game.board, PLAYER1)
         
         self.eval_canvas.delete("bar")
@@ -223,7 +223,6 @@ class ConnectFourApp:
         col = agent.get_action(self.game)
         elapsed = time.time() - start_time
         
-        # Schedule the UI update back on the main thread
         def finish():
             if type(agent) is MinimaxAgent:
                 self.nodes_label.config(text=f"Nodes Expanded:\n{agent.nodes_expanded}")
