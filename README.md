@@ -26,3 +26,4 @@ A Python-based Connect Four game that uses a custom Minimax AI with Alpha-Beta p
    ```bash
    python evaluate.py
    ```
+Note: If this doesn't work we have a releases tab with the application. This should work.
