@@ -118,17 +118,133 @@ def run_experiment(agent1_name, player1, agent2_name, player2, num_games=10):
     
     print("="*50 + "\n")
 
+def run_presentation_experiments(num_games=10):
+    print("\n" + "="*85)
+    print("RUNNING PRESENTATION EXPERIMENTS (This may take a minute...)")
+    print("="*85)
+    
+    opponents = [
+        ("Random Agent", RandomAgent(PLAYER2)),
+        ("Greedy Agent", GreedyAgent(PLAYER2)),
+        ("Minimax (Depth 3)", MinimaxAgent(PLAYER2, max_depth=3)),
+        ("Final Agent (Depth 5)", MinimaxAgent(PLAYER2, max_depth=5))
+    ]
+    
+    results = []
+    
+    for opp_name, opp_agent in opponents:
+        matchup_name = f"Final Agent vs {opp_name}"
+        print(f"Testing: {matchup_name}...")
+        p1_wins = 0
+        total_p1_nodes = 0
+        total_p1_time = 0
+        total_p1_moves = 0
+        
+        for i in range(num_games):
+            player1 = MinimaxAgent(PLAYER1, max_depth=5)
+            # Fresh opponent instance if needed, though run_match clears ttable
+            if opp_name == "Random Agent":
+                opp_agent = RandomAgent(PLAYER2)
+            elif opp_name == "Greedy Agent":
+                opp_agent = GreedyAgent(PLAYER2)
+            elif opp_name == "Minimax (Depth 3)":
+                opp_agent = MinimaxAgent(PLAYER2, max_depth=3)
+            elif opp_name == "Final Agent (Depth 5)":
+                opp_agent = MinimaxAgent(PLAYER2, max_depth=5)
+
+            winner, metrics = run_match(player1, opp_agent)
+            
+            if winner == PLAYER1:
+                p1_wins += 1
+                
+            total_p1_time += metrics[PLAYER1]['time']
+            total_p1_moves += metrics[PLAYER1]['moves']
+            total_p1_nodes += metrics[PLAYER1]['nodes']
+            
+        win_rate = (p1_wins / num_games) * 100
+        avg_nodes = total_p1_nodes / max(1, total_p1_moves)
+        avg_time = total_p1_time / max(1, total_p1_moves)
+        
+        # Store matchup_name instead of just opp_name to be perfectly clear
+        results.append((matchup_name, win_rate, avg_nodes, avg_time))
+        print(f"  -> Final Agent Win Rate: {win_rate:.1f}%, Avg Nodes: {avg_nodes:.1f}, Avg Time: {avg_time:.4f}s")
+
+    print("\n\n" + "="*95)
+    print("FINAL PERFORMANCE TABLE (Copy into your presentation slide)")
+    print("Note: Win Rate is the percentage of games won by the FINAL AGENT (Player 1)")
+    print("="*95)
+    print(f"{'Matchup (Player 1 vs Player 2)':<45} | {'P1 Win Rate':<12} | {'Avg Nodes/Move':<15} | {'Avg Time/Move':<15}")
+    print("-" * 95)
+    for matchup_name, win_rate, avg_nodes, avg_time in results:
+         print(f"{matchup_name:<45} | {win_rate:>11.1f}% | {avg_nodes:>14.1f} | {avg_time:>13.4f}s")
+    print("="*95 + "\n")
+import random
+
+def run_ab_performance_test(num_games=5):
+    print("\n" + "="*95)
+    print(f"MEASURING ALPHA-BETA PRUNING IMPROVEMENT (Depth 4) over {num_games} games")
+    print("="*95)
+    
+    total_ab_nodes = 0
+    total_ab_time = 0
+    total_raw_nodes = 0
+    total_raw_time = 0
+    
+    print(f"Running matches against RandomAgent (with identical seeds for fair comparison)...")
+    
+    for i in range(num_games):
+        ab_agent = MinimaxAgent(PLAYER1, max_depth=4, use_ab=True, use_tt=False)
+        raw_agent = MinimaxAgent(PLAYER1, max_depth=4, use_ab=False, use_tt=False)
+        
+        # Give both agents the exact same randomized opponent for a 1-to-1 fair comparison
+        seed_val = i * 1000
+        
+        random.seed(seed_val)
+        _, metrics_ab = run_match(ab_agent, RandomAgent(PLAYER2))
+        
+        random.seed(seed_val)
+        _, metrics_raw = run_match(raw_agent, RandomAgent(PLAYER2))
+        
+        total_ab_nodes += metrics_ab[PLAYER1]['nodes']
+        total_ab_time += metrics_ab[PLAYER1]['time']
+        
+        total_raw_nodes += metrics_raw[PLAYER1]['nodes']
+        total_raw_time += metrics_raw[PLAYER1]['time']
+        
+        print(f"  Game {i+1} completed.")
+        
+    print(f"\nResults (Total for {num_games} games vs RandomAgent):")
+    print(f"Alpha-Beta Minimax : {total_ab_nodes} nodes searched, {total_ab_time:.4f} sec")
+    print(f"Raw Minimax        : {total_raw_nodes} nodes searched, {total_raw_time:.4f} sec")
+    
+    node_reduction = (total_raw_nodes - total_ab_nodes) / max(1, total_raw_nodes) * 100
+    time_reduction = (total_raw_time - total_ab_time) / max(1, total_raw_time) * 100
+    
+    print(f"\nImprovement:")
+    print(f"Nodes searched reduced by: {node_reduction:.2f}% (Saved {total_raw_nodes - total_ab_nodes} nodes)")
+    print(f"Time reduced by:           {time_reduction:.2f}%")
+    print("="*95 + "\n")
+    
+    # reset seed to none for normal random behavior later
+    random.seed(None)
+
 if __name__ == "__main__":
     # Test 1: Greedy vs Random
-    run_experiment(
-        "GreedyAgent", GreedyAgent(PLAYER1), 
-        "RandomAgent", RandomAgent(PLAYER2), 
-        num_games=10
-    )
+    # run_experiment(
+    #     "GreedyAgent", GreedyAgent(PLAYER1), 
+    #     "RandomAgent", RandomAgent(PLAYER2), 
+    #     num_games=10
+    # )
     
     # Test 2: Minimax (Depth 3) vs Greedy
-    run_experiment(
-        "Minimax (D3)", MinimaxAgent(PLAYER1, max_depth=3), 
-        "GreedyAgent", GreedyAgent(PLAYER2), 
-        num_games=5
-    )
+    # run_experiment(
+    #     "Minimax (D3)", MinimaxAgent(PLAYER1, max_depth=3), 
+    #     "GreedyAgent", GreedyAgent(PLAYER2), 
+    #     num_games=5
+    # )
+
+    # experiments
+    run_presentation_experiments(num_games=5) # number of games ran
+    
+    # Alpha-Beta Pruning measurement
+    run_ab_performance_test()
